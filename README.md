@@ -18,3 +18,9 @@
   - 認証の検証は、本 IF を実装することで可能。認証情報のモデルオブジェクトを SpringSecurity デフォルトで利用することはないので、UserDetails と UserDetailsService の実装は実質必須となる。
 
 ### ログイン成功時のハンドラ (LoginSuccessHandler)
+
+- ログイン成功時のリダイレクトパスを設定する。
+
+### エラー処理のカスタマイズ
+
+- `LoginUrlAuthenticationEntryPoint` を拡張することで、ログイン時のエラー処理のカスタマイズが可能

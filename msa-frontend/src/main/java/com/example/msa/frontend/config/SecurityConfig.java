@@ -10,6 +10,9 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import com.example.msa.frontend.app.web.security.CustomUserDetailsService;
+import com.example.msa.frontend.app.web.security.LoginSuccessHandler;
+import com.example.msa.frontend.app.web.security.SessionExpiredDetectingLoginUrlAuthenticationEntryPoint;
 
 @Configuration
 public class SecurityConfig {
@@ -41,14 +44,14 @@ public class SecurityConfig {
         .formLogin()
         .loginProcessingUrl("/authenticate")
         .loginPage("/login")
-        .successHandler(null) // TODO
+        .successHandler(loginSuccessHandler())
         .failureUrl("/login")
         .usernameParameter("username")
         .passwordParameter("password")
         .permitAll()
         .and()
         .exceptionHandling()
-        .authenticationEntryPoint(null) // 認証処理で例外が発生した際にハンドリングする設定
+        .authenticationEntryPoint(authenticationEntryPoint()) // 認証処理で例外が発生した際にハンドリングする設定
         .and()
         .logout()
         .logoutSuccessUrl("/login")
@@ -56,15 +59,14 @@ public class SecurityConfig {
     return http.build();
   }
 
-  // TODO
-  //	@Bean
-  //	public LoginSuccessHandler loginSuccessHandler() {
-  //
-  //	}
+  @Bean
+  public LoginSuccessHandler loginSuccessHandler() {
+    return new LoginSuccessHandler();
+  }
 
   @Bean
   AuthenticationEntryPoint authenticationEntryPoint() {
-    return null; // TODO
+    return new SessionExpiredDetectingLoginUrlAuthenticationEntryPoint("/login");
   }
 
   @Bean
@@ -74,8 +76,7 @@ public class SecurityConfig {
 
   @Bean
   protected UserDetailsService userDetailService() {
-    //		return new CustomUserDetailService(); TODO
-    return null;
+    return new CustomUserDetailsService();
   }
 
   @Bean

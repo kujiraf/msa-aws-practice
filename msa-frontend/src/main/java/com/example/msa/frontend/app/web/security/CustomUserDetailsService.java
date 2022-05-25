@@ -1,4 +1,4 @@
-package com.example.msa.frontend.app.security;
+package com.example.msa.frontend.app.web.security;
 
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
