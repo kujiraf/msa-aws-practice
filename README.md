@@ -39,8 +39,32 @@
 
 ## 第五回 バックエンドマイクロサービスの実装
 
+### 作成するクラスの概要
+
+TBD
+
+### 環境プロファイルの設定
+
 ユーザ情報をリソースとして扱うバックエンドのマイクロサービスを作成する
 
 - ローカル実行用に`dev`プロファイルを定義する
   - dev 環境では、インメモリ DB の HSQL を利用する
 - `User` エンティティと `Credential` エンティティを作成する。User:Credential=1:多の関係になる。
+
+### 例外処理
+
+#### 例外処理の一元的な設定
+
+- マイクロサービスで発生した例外は`@ControllerAdvice`を付与した`ExceptionHandler`で一元的に設定可能（[参考](https://qiita.com/niwasawa/items/f5a6a285d7bd99e8273a)）
+
+  - `@ExceptinHandler`アノテーションにて、捕捉対象の例外クラスを指定する
+  - Controller クラスは try-catch をかかずに例外をスローすればよい
+
+- 今回のサンプル実装では、`RuntimeException`は捕捉しない。
+  - Spring がデフォルトで INTERNAL_SERVER_ERROR としてシステム例外を処理しているため
+
+#### エラー情報の出力には jackson を利用
+
+- `ErrorResponse`には、型情報を JSON に出力するための`@JsonTypeInfo`を利用している。（[参考](https://qiita.com/opengl-8080/items/b613b9b3bc5d796c840c#%E5%9E%8B%E6%83%85%E5%A0%B1%E3%82%92-json-%E3%81%AB%E5%87%BA%E5%8A%9B%E3%81%99%E3%82%8B)）
+- `@JsonSubTypes`で、型ごとに Json 出力の値を指定可能
+  - ただし、`@JsonSubTypes`はインタフェースや抽象クラスに具象クラス名が入ってしまう。`@JsonTypeName`を使えば、具象クラス側で名前の設定が可能。
