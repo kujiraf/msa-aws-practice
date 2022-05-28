@@ -1,3 +1,11 @@
+spring:
+  profiles:
+    active: dev
 server:
   servlet:
     context-path: /backend/user
+  port: 8081
+security:
+  basic:
+    enable: false
+  ignored: /**

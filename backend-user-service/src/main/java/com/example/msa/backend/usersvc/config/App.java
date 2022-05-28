@@ -1,13 +1,13 @@
-package com.example.msa.backend.usersvc;
+package com.example.msa.backend.usersvc.config;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BackendUserServiceApplication {
+public class App {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BackendUserServiceApplication.class, args);
+		SpringApplication.run(App.class, args);
 	}
 
 }

@@ -26,7 +26,7 @@ public class JpaConfig {
   }
 
   @Bean
-  public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean() {
+  public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
     JpaVendorAdapter adopter = new HibernateJpaVendorAdapter();
 
     Properties properties = new Properties();

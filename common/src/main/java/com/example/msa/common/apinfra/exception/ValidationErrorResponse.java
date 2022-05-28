@@ -1,7 +1,6 @@
 package com.example.msa.common.apinfra.exception;
 
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@JsonTypeName("ValidationErrorResponse")
+// @JsonTypeName("ValidationErrorResponse")
 public class ValidationErrorResponse implements ErrorResponse {
   private List<ValidationError> validationErrors;
 }
