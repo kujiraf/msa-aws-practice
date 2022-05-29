@@ -112,3 +112,7 @@
     <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
   </dependency>
   ```
+
+## 第六回 Web アプリケーションからマイクロサービスを呼び出す
+
+第３，４回で作成したフロントエンドを修正して、バックエンドからユーザリソースを使って認証処理を行う
