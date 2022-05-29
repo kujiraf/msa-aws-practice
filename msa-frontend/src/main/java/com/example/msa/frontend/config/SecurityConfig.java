@@ -1,5 +1,7 @@
 package com.example.msa.frontend.config;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -8,8 +10,10 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import com.example.msa.frontend.app.web.security.CustomUserDetailsService;
@@ -73,7 +77,12 @@ public class SecurityConfig {
 
   @Bean
   public PasswordEncoder passwordEncoder() {
-    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    //    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    Map<String, PasswordEncoder> encoders = new HashMap<>();
+    encoders.put("pbkdf2", new Pbkdf2PasswordEncoder());
+    encoders.put("bcrypt", new BCryptPasswordEncoder());
+    PasswordEncoder pe = new DelegatingPasswordEncoder("pbkdf2", encoders);
+    return pe;
   }
 
   @Bean

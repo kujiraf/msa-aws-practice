@@ -5,6 +5,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import com.example.msa.frontend.app.model.PortalInformation;
 import com.example.msa.frontend.app.web.security.CustomUserDetails;
 
 @Controller
@@ -30,10 +31,9 @@ public class FrontendController {
       @AuthenticationPrincipal CustomUserDetails customUserDetails,
       Model model,
       HttpSession httpSession) {
-    //    model.addAttribute(
-    //        "portalInformation",
-    //
-    // PortalInformation.builder().userResource(customUserDetails.getUserResource()).build());
+    model.addAttribute(
+        "portalInformation",
+        PortalInformation.builder().userResource(customUserDetails.getUserResource()).build());
     String sessionId = httpSession.getId();
     model.addAttribute("sessionId", sessionId);
     return "portal";

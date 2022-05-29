@@ -1,10 +1,10 @@
 package com.example.msa.frontend.app.web.security;
 
 import java.util.Collection;
-
+import java.util.Objects;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
+import com.example.msa.common.model.UserResource;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +15,7 @@ import lombok.Data;
 public class CustomUserDetails implements UserDetails {
 
   private static final long serialVersionUID = 1L;
+  private final UserResource userResource;
   private final Collection<GrantedAuthority> authorities;
 
   @Override
@@ -24,13 +25,16 @@ public class CustomUserDetails implements UserDetails {
 
   @Override
   public String getPassword() {
-    // ハッシュかも暗号化もせずに処理するパスワードエンコーダのため、noopを付けている。
-    return "{noop}test";
+    return userResource.getCredentialResources().stream()
+        .filter(ur -> Objects.equals("PASSWORD", ur.getCredentialType()))
+        .findFirst()
+        .get()
+        .getCredentialKey();
   }
 
   @Override
   public String getUsername() {
-    return "test";
+    return userResource.getLoginId();
   }
 
   @Override
