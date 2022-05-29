@@ -1,5 +1,13 @@
 # msa-aws-practice
 
+## ベースパッケージの表記
+
+ベースパッケージを`${pkg}`と表す。実際のベースパッケージは以下の通り。
+
+- `msa-frontend`の場合、`com.example.msa.frontend`
+- `backend-user-service`の場合、`com.example.msa.backend.usersvc`
+- `common`の場合、`com.example.msa.common`
+
 ## 第三回 詳細なアーキテクチャと利用するサービス/ライブラリ
 
 - `WebSecurityConfigurerAdapter` が非推奨となっている。代替案は Spring の[公式記事](https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter)より
@@ -39,16 +47,9 @@
 
 ## 第五回 バックエンドマイクロサービスの実装
 
-ユーザ情報をリソースとして扱うバックエンドのマイクロサービスを作成する
+ユーザ情報をリソースとして扱うバックエンドのマイクロサービスを作成する。
 
-### 作成するクラスの概要
-
-ここで`${pkg}`を以下のようにあらわす
-
-- `backend-user-service`の場合、`com.example.msa.backend.usersvc`
-- `common`の場合、`com.example.msa.common`
-
-#### 設定クラスの作成
+### 設定クラスの作成
 
 `${pkg}.config`に設定クラス作成する
 
@@ -65,20 +66,20 @@
     - JPA EntityManagerFactory のセットアップ
       - スキャン対象のパッケージ指定、プロパティ、データソースなどの定義
 
-#### コントローラ層の作成
+### コントローラ層の作成
 
 - `${pkg}.app.web`にコントローラクラスを作成
   - ユーザ ID やログイン ID に応じたユーザリソースを返却する REST Controller
 - `@GetMapping`でパスとメソッドのマッピング
 - `@PathValiable`, `@RequestParam`, `@RequestBody`で引数をリクエストから取得している
 
-#### ドメイン層の作成
+### ドメイン層の作成
 
 - `${pkg}.domain`配下にサービスやリポジトリを作成する
   - サービスは普通にリポジトリで DB にアクセスするだけ
   - リポジトリは JPA を利用
 
-#### 認証情報を保持するクラス
+### 認証情報を保持するクラス
 
 - バックエンドサービスは、（※terasoluna の方針に基づき）DB の TBL の１レコードを表現するエンティティクラスを domain 層に作成する
   - `${pkg}.domain.entity`パッケージに`User`、 `Credential`、 `CredentialPK` クラスを作成する。User:Credential=1:多の関係になる。
@@ -86,7 +87,7 @@
 - 上記の認証情報をフロントエンド・バックエンド双方で参照できるように、`common`プロジェクトに認証情報を保持するための`Resource`クラスを作成する
   - `${pkg}.model`パッケージに`UserResource`と`CredentialResource`クラスを作成する
 
-#### 例外処理の一元的な設定
+### 例外処理の一元的な設定
 
 - 例外処理という共通処理のため、`common`プロジェクトにハンドラや例外レスポンスクラスを作成する
   - クラスは`${pkg}.apinfra.exception`にまとめる
@@ -99,7 +100,7 @@
 
   - Spring がデフォルトで INTERNAL_SERVER_ERROR としてシステム例外を処理しているため
 
-#### その他実装 Tips
+### その他実装 Tips
 
 - エラー情報の出力には `jackson` を利用
   - `ErrorResponse`には、型情報を JSON に出力するための`@JsonTypeInfo`を利用している。（[参考](https://qiita.com/opengl-8080/items/b613b9b3bc5d796c840c#%E5%9E%8B%E6%83%85%E5%A0%B1%E3%82%92-json-%E3%81%AB%E5%87%BA%E5%8A%9B%E3%81%99%E3%82%8B)）
@@ -113,6 +114,21 @@
   </dependency>
   ```
 
-## 第六回 Web アプリケーションからマイクロサービスを呼び出す
+## 第六回 Web アプリケーションからマイクロサービスを呼び出す(1)
 
-第３，４回で作成したフロントエンドを修正して、バックエンドからユーザリソースを使って認証処理を行う
+第３，４回で作成したフロントエンドを修正して、バックエンドからユーザリソースを使って認証処理を行う。
+（１）ではバックエンドのサービスからリソースを取得する実装をする。
+
+### ドメイン層の実装
+
+- `${pkg}.domain`配下にサービスとリポジトリを作成する
+- サービスはいつも通りリポジトリからデータを取得するように実装する
+  - リソースが DB なのかバックエンドのサービスからの取得になるのかはリポジトリ側で隠ぺいするので、サービスは意識しない
+- リポジトリはバックエンドのユーザサービスから（REST API で）リソースを取得する。
+  - リソースの取得には、`webflux`の`WebClient`を利用している
+  - pom に webflux の dependency を追加した
+
+### WebClient の設定
+
+- `application.yaml`にバックエンドを探すための DNS を追加
+- `DevConfig`を作成し、WebClient のアクセス先を`application.yaml`から読み込むように設定
