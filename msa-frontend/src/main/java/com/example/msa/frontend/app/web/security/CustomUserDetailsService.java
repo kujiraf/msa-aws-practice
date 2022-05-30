@@ -30,10 +30,13 @@ public class CustomUserDetailsService implements UserDetailsService {
       } else {
         authorities = AuthorityUtils.createAuthorityList("ROLE_USER");
       }
-      return CustomUserDetails.builder().authorities(authorities).build();
+      return CustomUserDetails.builder()
+          .userResource(userResource)
+          .authorities(authorities)
+          .build();
     } catch (BusinessException e) {
       throw new UsernameNotFoundException(
-          messageSource.getMessage("BE001", null, Locale.getDefault()), e);
+          messageSource.getMessage("BE0001", null, Locale.getDefault()), e);
     }
   }
 }

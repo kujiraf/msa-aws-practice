@@ -8,6 +8,29 @@
 - `backend-user-service`の場合、`com.example.msa.backend.usersvc`
 - `common`の場合、`com.example.msa.common`
 
+## Spring Security メモ
+
+- 認証のアーキテクチャは[この通り](http://terasolunaorg.github.io/guideline/current/ja/Security/Authentication.html#db)
+- `SecurityConfig`の`SecurityFilterChain`Bean にで`loginForm()`を設定している。この設定により、`FormLoginConfigurer`にてデフォルトで`UserPasswordAuthenticationFilter`が設定される
+  - [terrasoluna の設定](http://terasolunaorg.github.io/guideline/current/ja/Security/Authentication.html#form-login-usage)だと `<sec:form-login />`に値する
+  - これによりフォーム認証が可能となる
+
+### フォームログイン
+
+フォームログインの流れは[この通り](http://terasolunaorg.github.io/guideline/current/ja/Security/Authentication.html#form-login)
+
+1. `UserPasswordAuthenticationFilter`が、認証処理を実行する`AuthenticationManager`に処理を委譲する。実際の処理は`AuthenticationProvider`（今回の実装は`DaoAuthenticationProvider`）が行う。
+1. `UserPasswordAuthenticationFilter`が 1 の認証結果を受けて、`Authentication(Success/Failure)Handler`のメソッドを呼び出し、画面遷移を行う
+
+### DB 認証
+
+- DB 認証の流れは[この通り](http://terasolunaorg.github.io/guideline/current/ja/Security/Authentication.html#db)
+- このハンズオンでは、フォームログイン時の username/password を、バックエンドサービスの DB から取得した資格情報に照合する認証を行っている。
+
+### 参考
+
+- [terrasoluna](http://terasolunaorg.github.io/guideline/current/ja/Security/Authentication.html#pbkdf2passwordencoder)
+
 ## 第三回 詳細なアーキテクチャと利用するサービス/ライブラリ
 
 - `WebSecurityConfigurerAdapter` が非推奨となっている。代替案は Spring の[公式記事](https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter)より
@@ -188,6 +211,7 @@ Controller の処理実行と、View のレンダリング処理の間に処理�
 - Controller クラスで利用するため、`${pkg}.app.web.interceptor`パッケージに作成する
   - ※Controller は`${pkg}.app.web`にある
 - `CustomUserDetails`が保持するロールに応じて画面に表示させるメニューリストを生成するインターセプタを作成する
+  - `UserDetails`は、`SecurityContextHolder`から任意の場所で取得することが可能
 - 上記で参照するロールは、`CustomUserDetailsService`で`GrantedAuthority`のリストにセットしたものである
 
 ### `MvcConfig`の修正
@@ -200,3 +224,16 @@ Controller の処理実行と、View のレンダリング処理の間に処理�
   registry.addInterceptor(myInterceptor1());
   registry.addInterceptor(myInterceptor2());
   ```
+
+# Tips
+
+## Eclipse のプロセスが生き残って AP 実行できない場合
+
+```cmd
+netstat -ao | find "[port]"
+taskkill /PID [pid]
+```
+
+## Eclipse のショートカット
+
+https://yulii.github.io/eclipse-shortcut-keys-20120814.html

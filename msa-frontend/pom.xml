@@ -39,9 +39,9 @@
 		</dependency>
 		
 		<dependency>
-		  <groupId>com.example.msa</groupId>
-		  <artifactId>common</artifactId>
-		  <version>0.0.1-SNAPSHOT</version>
+      <groupId>com.example.msa</groupId>
+      <artifactId>common</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		
     <dependency>
