@@ -27,14 +27,14 @@ public class SampleServiceImpl implements SampleService {
   @Override
   public User getUser(Long id) throws BusinessException {
     User user = userRepository.findByUserId(id);
-    throwExceptionIfNotFindUser(user, "BE001", id.toString());
+    throwExceptionIfNotFindUser(user, "BE0001", id.toString());
     return user;
   }
 
   @Override
   public User getUserByLoginId(String loginId) throws BusinessException {
     User user = userRepository.findByLoginId(loginId);
-    throwExceptionIfNotFindUser(user, "BE002", loginId);
+    throwExceptionIfNotFindUser(user, "BE0002", loginId);
     return user;
   }
 
@@ -51,7 +51,7 @@ public class SampleServiceImpl implements SampleService {
                 })
             .collect(Collectors.toList());
     User user = userRepository.findByUserId(updateTargetUserId);
-    throwExceptionIfNotFindUser(user, "BE001", updateTargetUserId.toString());
+    throwExceptionIfNotFindUser(user, "BE0001", updateTargetUserId.toString());
     user.getCredentialsByUserId().clear();
     userRepository.flush();
     user.getCredentialsByUserId().addAll(credentials.stream().collect(Collectors.toSet()));

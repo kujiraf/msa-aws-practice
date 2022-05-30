@@ -1,13 +1,13 @@
-package com.example.msa.frontend;
+package com.example.msa.frontend.config;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MsaFrontendApplication {
+public class App {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MsaFrontendApplication.class, args);
+		SpringApplication.run(App.class, args);
 	}
 
 }

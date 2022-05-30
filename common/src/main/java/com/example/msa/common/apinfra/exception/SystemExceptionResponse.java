@@ -1,4 +1,6 @@
 package com.example.msa.common.apinfra.exception;
 
-// @JsonTypeName("SystemExceptionResponse")
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
+@JsonTypeName("SystemExceptionResponse")
 public class SystemExceptionResponse implements ErrorResponse {}

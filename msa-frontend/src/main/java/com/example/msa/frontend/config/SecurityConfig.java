@@ -8,7 +8,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
@@ -43,7 +43,7 @@ public class SecurityConfig {
         .and()
         .csrf()
         .disable() // 便宜上、CSRFトークン送信必須設定をオフにしている
-        .formLogin()
+        .formLogin() // フォームログインに UsernamePasswordAuthenticationFilter が適用される
         .loginProcessingUrl("/authenticate")
         .loginPage("/login")
         .successHandler(loginSuccessHandler())
@@ -73,7 +73,17 @@ public class SecurityConfig {
 
   @Bean
   public PasswordEncoder passwordEncoder() {
-    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    //    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+
+    // TODO なぜかこれだと id が null になってしまう
+    //    Map<String, PasswordEncoder> encoders = new HashMap<>();
+    //    encoders.put("pbkdf2", new Pbkdf2PasswordEncoder());
+    //    encoders.put("bcrypt", new BCryptPasswordEncoder());
+    //    PasswordEncoder pe = new DelegatingPasswordEncoder("pbkdf2", encoders);
+    //    return pe;
+
+    //    return new Pbkdf2PasswordEncoder();
+    return new BCryptPasswordEncoder(); // githubのサンプルコードがBCryptPasswordEncoderでエンコードされているので、一旦このエンコーダを利用する。
   }
 
   @Bean
