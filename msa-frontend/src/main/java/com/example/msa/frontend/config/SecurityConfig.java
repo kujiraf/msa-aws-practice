@@ -1,5 +1,7 @@
 package com.example.msa.frontend.config;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,7 +11,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import com.example.msa.frontend.app.web.security.CustomUserDetailsService;
@@ -75,15 +79,12 @@ public class SecurityConfig {
   public PasswordEncoder passwordEncoder() {
     //    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-    // TODO なぜかこれだと id が null になってしまう
-    //    Map<String, PasswordEncoder> encoders = new HashMap<>();
-    //    encoders.put("pbkdf2", new Pbkdf2PasswordEncoder());
-    //    encoders.put("bcrypt", new BCryptPasswordEncoder());
-    //    PasswordEncoder pe = new DelegatingPasswordEncoder("pbkdf2", encoders);
-    //    return pe;
-
-    //    return new Pbkdf2PasswordEncoder();
-    return new BCryptPasswordEncoder(); // githubのサンプルコードがBCryptPasswordEncoderでエンコードされているので、一旦このエンコーダを利用する。
+    // terrasoluna 5.7.1の推奨設定通りの実装。
+    // idForEncoderに"pbkdf2"をデフォルトで指定しているが、データソースから取得したPWのでコードには、PWのプレフィックスに{bcrypt}がついていればBCrypt...のエンコーダを使う。
+    Map<String, PasswordEncoder> encoders = new HashMap<>();
+    encoders.put("pbkdf2", new Pbkdf2PasswordEncoder());
+    encoders.put("bcrypt", new BCryptPasswordEncoder());
+    return new DelegatingPasswordEncoder("pbkdf2", encoders);
   }
 
   @Bean

@@ -180,6 +180,17 @@
 
 - デフォルトのエンコーダから terrasoluna 推奨の PBKDF2 のパスワードエンコーダを利用する
 - 実装は terrasoluna の[ガイド参照](http://terasolunaorg.github.io/guideline/current/ja/Security/Authentication.html#delegatingpasswordencoder)
+  ```java
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    Map<String, PasswordEncoder> encoders = new HashMap<>();
+    encoders.put("pbkdf2", new Pbkdf2PasswordEncoder());
+    encoders.put("bcrypt", new BCryptPasswordEncoder());
+    return new DelegatingPasswordEncoder("pbkdf2", encoders);
+  }
+  ```
+- 上記の例は terasoluna 5.7.1 の推奨設定。ただし、`DelegatingPasswordEncoder`を利用する場合、パスワードのハッシュ値に平文で`{pbkdf2}`等のプレフィックスがついている必要がある。
+  - 既に運用されているシステムなど、PW にプレフィックスがついていない場合は、`DelegatingPasswordEncoder`ではなく、直接`Pbkdf2PasswordEncoder`などを Bean 定義してあげる必要がある
 
 ##### _*PBKDF2 について*_
 
