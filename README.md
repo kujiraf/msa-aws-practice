@@ -31,7 +31,7 @@
 
 - [terrasoluna](http://terasolunaorg.github.io/guideline/current/ja/Security/Authentication.html#pbkdf2passwordencoder)
 
-## 第三回 詳細なアーキテクチャと利用するサービス/ライブラリ
+## 第 3 回 詳細なアーキテクチャと利用するサービス/ライブラリ
 
 - `WebSecurityConfigurerAdapter` が非推奨となっている。代替案は Spring の[公式記事](https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter)より
 - `AuthnticationManagerBuilder` も当然 Override ではなく Bean 定義する必要あり。この記事では、`DaoAuthenticationProvider` が利用される。
@@ -49,7 +49,7 @@
       }
       ```
 
-## 第四回 SpringSecurity を使ったカスタム設定
+## 第 4 回 SpringSecurity を使ったカスタム設定
 
 ### 認証情報の検証・生成 (UserDetails, UserDetailsService)
 
@@ -68,7 +68,7 @@
 
 - `LoginUrlAuthenticationEntryPoint` を拡張することで、ログイン時のエラー処理のカスタマイズが可能
 
-## 第五回 バックエンドマイクロサービスの実装
+## 第 5 回 バックエンドマイクロサービスの実装
 
 ユーザ情報をリソースとして扱うバックエンドのマイクロサービスを作成する。
 
@@ -137,7 +137,7 @@
   </dependency>
   ```
 
-## 第六回 Web アプリケーションからマイクロサービスを呼び出す(1)
+## 第 6 回 Web アプリケーションからマイクロサービスを呼び出す(1)
 
 第３，４回で作成したフロントエンドを修正して、バックエンドからユーザリソースを使って認証処理を行う。
 （１）ではバックエンドのサービスからリソースを取得する実装をする。
@@ -157,7 +157,7 @@
 - `application.yaml`にバックエンドを探すための DNS を追加
 - `DevConfig`を作成し、WebClient のアクセス先を`application.yaml`から読み込むように設定
 
-## 第七回 Web アプリケーションからマイクロサービスを呼び出す(2)
+## 第 7 回 Web アプリケーションからマイクロサービスを呼び出す(2)
 
 第３，４回で作成したフロントエンドを修正して、バックエンドからユーザリソースを使って認証処理を行う。
 （２）では SpringSecurity の修正をする
@@ -235,6 +235,32 @@ Controller の処理実行と、View のレンダリング処理の間に処理�
   registry.addInterceptor(myInterceptor1());
   registry.addInterceptor(myInterceptor2());
   ```
+
+## 第 8 回 AWS X-Ray を用いたマイクロサービスの可視化(1)
+
+### AWS X-Ray の概要
+
+- X-Ray とは、分散アプリケーションの分析とデバッグ用のサービス
+- AP に処理開始/終了時間などのメトリクス収集の環境設定をしておくと、別の AP サービスや S3, RDS などの AWS リソースの呼び出し状況を可視化できる
+
+### ローカル環境で X-Ray を動か素環境設定
+
+- docker 実行コマンド
+  ```bash
+  docker run --rm --attach STDOUT -v ~/.aws/:/root/.aws/ --net=host -e AWS_REGION=ap-northeast-1 --name xray-daemon -p 2000:2000/udp test/xray-daemon:latest -o
+  ```
+
+## 第 9 回 AWS X-Ray を用いたマイクロサービスの可視化(2)
+
+### セグメントとサブネット
+
+- セグメント：計測する AP の対象の処理単位
+  - `TraceID`によって識別さる
+    - これをリクエストヘッダにしておけば複数のセグメントを透過的にトレース可能となる
+- サブセグメント：セグメントの中で自由に分けることができるもの
+  - カスタムサブセグメントとして、任意のタイミングで開始することが可能
+    - 「Controller」 や、「ServiceA & ServiceB」、「SQS キューの送信」 のような単位など
+  - `ApacheHtttpComponents`や、`SpringAOP`を拡張したライブラリや、`AWS SDK`に組み込まれているものもある
 
 # Tips
 
