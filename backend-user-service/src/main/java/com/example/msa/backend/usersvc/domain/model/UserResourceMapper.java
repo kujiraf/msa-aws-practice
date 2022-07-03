@@ -7,6 +7,12 @@ import com.example.msa.common.model.UserResource;
 
 public class UserResourceMapper {
 
+  /**
+   * UserのcredentialResourcesを除くプロパティをUserResourceにマッピングする
+   *
+   * @param user
+   * @return マッピングされたUserResource
+   */
   public static UserResource map(User user) {
     return UserResource.builder()
         .userId(Long.toString(user.getUserId()))
@@ -18,6 +24,12 @@ public class UserResourceMapper {
         .build();
   }
 
+  /**
+   * UserのcredentialResourcesを含むプロパティをUserResourceにマッピングする
+   *
+   * @param user
+   * @return マッピングされたUserResource
+   */
   public static UserResource mapWithCredentials(User user) {
     UserResource userResource = map(user);
     userResource.setCredentialResources(
@@ -27,6 +39,12 @@ public class UserResourceMapper {
     return userResource;
   }
 
+  /**
+   * List<User>をList<UserResource>にマッピングする
+   *
+   * @param users
+   * @return マッピングされたList<UserResource>
+   */
   public static List<UserResource> mapWithCredentials(List<User> users) {
     return users.stream().map(UserResourceMapper::mapWithCredentials).collect(Collectors.toList());
   }

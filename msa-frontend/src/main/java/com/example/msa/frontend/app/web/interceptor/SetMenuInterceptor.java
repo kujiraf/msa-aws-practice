@@ -14,16 +14,22 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import com.example.msa.frontend.app.model.Menu;
 import com.example.msa.frontend.app.web.security.CustomUserDetails;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class SetMenuInterceptor implements HandlerInterceptor {
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
       throws Exception {
-    // TODO ログの処理
+    log.info(this.getClass().getName() + ": request :" + request);
     return true;
   }
 
+  /**
+   * コントローラ実行後、テンプレートエンジンによるレンダリング前に挟み込む処理を実行する。<br>
+   * ここでは、CustomUserDetailsServiceで設定した権限に応じて使用可能なメニューのリストをモデルにマッピングしている。
+   */
   @Override
   public void postHandle(
       HttpServletRequest request,

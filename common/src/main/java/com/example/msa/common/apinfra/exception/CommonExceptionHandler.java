@@ -13,6 +13,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class CommonExceptionHandler {
 
+  /**
+   * BusinessExceptionが発生した際に処理をハンドリングする
+   *
+   * @param e
+   * @return
+   */
   @ExceptionHandler(BusinessException.class)
   public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
     e.setStackTrace(new StackTraceElement[] {});
@@ -20,6 +26,12 @@ public class CommonExceptionHandler {
         BusinessExceptionResponse.builder().businessException(e).build(), HttpStatus.BAD_REQUEST);
   }
 
+  /**
+   * MethodArgumentNotValidExceptionまたはBindExceptionが発生した際に処理をハンドリングする
+   *
+   * @param e
+   * @return
+   */
   @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class})
   public ResponseEntity<ErrorResponse> handleValidationException(Exception e) {
     BindingResult bindingResult = null;
@@ -29,7 +41,7 @@ public class CommonExceptionHandler {
       bindingResult = ((BindException) e).getBindingResult();
     }
     List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-    return new ResponseEntity<>(
+    return new ResponseEntity<ErrorResponse>(
         ValidationErrorResponse.builder()
             .validationErrors(ValidationErrorMapper.map(fieldErrors))
             .build(),

@@ -9,6 +9,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
+  /** ログインに成功したら /frontend/portal にリダイレクトするようにしている */
   @Override
   public void onAuthenticationSuccess(
       HttpServletRequest request, HttpServletResponse response, Authentication authentication)

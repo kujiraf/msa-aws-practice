@@ -16,6 +16,10 @@ import com.example.msa.common.apinfra.exception.SystemException;
 import com.example.msa.common.model.UserResource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * 各マイクロサービスの呼び出し処理を実行するクラス.<br>
+ * サービス呼び出し時の例外処理を一元的にこのクラスの責務とすることで、OrchestrationServiceの記述をシンプルにできる。
+ */
 // @Profile("v1") TODO
 @Component
 public class UserResourceRepositoryImpl implements UserResourceRepository {

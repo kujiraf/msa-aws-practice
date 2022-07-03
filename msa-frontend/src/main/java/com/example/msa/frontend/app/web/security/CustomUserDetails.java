@@ -16,6 +16,7 @@ public class CustomUserDetails implements UserDetails {
 
   private static final long serialVersionUID = 1L;
   private final UserResource userResource;
+  /** 認可に相当するGrantedAuthorityをCollection型で保持する */
   private final Collection<GrantedAuthority> authorities;
 
   @Override

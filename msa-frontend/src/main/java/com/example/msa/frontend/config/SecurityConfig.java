@@ -54,7 +54,7 @@ public class SecurityConfig {
         .failureUrl("/login")
         .usernameParameter("username")
         .passwordParameter("password")
-        .permitAll()
+        .permitAll() // 認証が必要な処理からログイン処理を除外する
         .and()
         .exceptionHandling()
         .authenticationEntryPoint(authenticationEntryPoint()) // 認証処理で例外が発生した際にハンドリングする設定

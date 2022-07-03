@@ -262,13 +262,24 @@ Controller の処理実行と、View のレンダリング処理の間に処理�
     - 「Controller」 や、「ServiceA & ServiceB」、「SQS キューの送信」 のような単位など
   - `ApacheHtttpComponents`や、`SpringAOP`を拡張したライブラリや、`AWS SDK`に組み込まれているものもある
 
+### X-Ray の Spring AOP の設定
+
+- `AbstructXRayInterceptor`を継承して XRay のコンフィグクラスを作成する
+  - この抽象クラスは、SpringAOP を用いてサブセグメントの開始終了処理を担うインタ―セプタになっている
+- `xrayEnabledClasses()`メソッドに`@Pointcut`アノテーションでサブセグメントを開始終了する定義条件を設定
+  - `@XRayEnabled`アノテーションを付与した`com.example.msa`配下パッケージのすべてのクラスのメソッドを対象に指定している
+    ```java
+    @Pointcut(@within(com.amazonaws.xray.spring.aop.XRayEnabled) && execution(* com.example.msa..*.*(..))
+    ```
+- `@Aspect`
+
 # Tips
 
 ## Eclipse のプロセスが生き残って AP 実行できない場合
 
 ```cmd
 netstat -ao | find "[port]"
-taskkill /PID [pid]
+taskkill /F /PID [pid]
 ```
 
 ## Eclipse のショートカット

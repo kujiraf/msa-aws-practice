@@ -14,12 +14,22 @@ import com.example.msa.common.apinfra.exception.BusinessException;
 import com.example.msa.common.model.UserResource;
 import com.example.msa.frontend.domain.service.OrchestrationService;
 
+/**
+ * ID/パスワードをプロパティとして定義されているインタフェースorg.springframework.security.core.userdetails.UserDetailsを取得して、検証をするクラス。
+ * <br>
+ * UserDetailsを取得するクラスは、org.springframework.security.core.userdetails.UserDetailsServiceを実装する必要がある。
+ */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
   @Autowired MessageSource messageSource;
   @Autowired OrchestrationService orchestrationService;
 
+  /**
+   * ユーザ名からユーザの情報をバックエンドから取得し、ユーザの権限を判定する。<br>
+   * 判定に基づき、適切な権限を付与したUserDetailsを返却する。<br>
+   * SpringSecurityは、このメソッドが返却したUserDtailsを使って検証処理を行う。
+   */
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     try {

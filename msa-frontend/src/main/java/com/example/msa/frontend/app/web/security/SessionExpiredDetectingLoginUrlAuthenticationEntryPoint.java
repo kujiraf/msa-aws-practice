@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
+/** セッションが無効になった場合に、それを検出しタイムアウト画面に遷移させるためのカスタムクラス */
 public class SessionExpiredDetectingLoginUrlAuthenticationEntryPoint
     extends LoginUrlAuthenticationEntryPoint {
 
@@ -20,7 +21,7 @@ public class SessionExpiredDetectingLoginUrlAuthenticationEntryPoint
       AuthenticationException authException) {
     String redirectUrl = super.buildRedirectUrlToLoginPage(request, response, authException);
     if (isRequestSessionInvalid(request)) {
-      redirectUrl = "session timeout";
+      redirectUrl = "timeout";
     }
     return redirectUrl;
   }

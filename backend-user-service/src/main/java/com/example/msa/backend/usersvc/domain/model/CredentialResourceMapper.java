@@ -7,6 +7,12 @@ import com.example.msa.common.model.CredentialResource;
 
 public class CredentialResourceMapper {
 
+  /**
+   * CredentialをCredentialResourceにマッピングする
+   *
+   * @param credential
+   * @return マッピングされたCredentialResource
+   */
   public static CredentialResource map(Credential credential) {
     return CredentialResource.builder()
         .userId(credential.getUserId())
@@ -16,10 +22,22 @@ public class CredentialResourceMapper {
         .build();
   }
 
+  /**
+   * List<Credential>をList<CredentialResource>にマッピングする
+   *
+   * @param credentials
+   * @return マッピングされたList<CredentialResource>
+   */
   public static List<CredentialResource> map(List<Credential> credentials) {
     return credentials.stream().map(CredentialResourceMapper::map).collect(Collectors.toList());
   }
 
+  /**
+   * CredentialResourceをCredentialにマッピングする
+   *
+   * @param credentialResource
+   * @return マッピングされたCredential
+   */
   public static Credential mapToEntity(CredentialResource credentialResource) {
     return Credential.builder()
         .userId(credentialResource.getUserId())
@@ -29,6 +47,12 @@ public class CredentialResourceMapper {
         .build();
   }
 
+  /**
+   * List<CredentialResource>をList<Credential>にマッピングする
+   *
+   * @param credentialResource
+   * @return マッピングされたList<Credential>
+   */
   public static List<Credential> mapToEntity(List<CredentialResource> resources) {
     return resources.stream()
         .map(CredentialResourceMapper::mapToEntity)
