@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.example.msa.backend.usersvc.domain.model.entity.Credential;
 import com.example.msa.backend.usersvc.domain.model.entity.User;
 import com.example.msa.backend.usersvc.domain.repository.jpa.UserRepository;
 import com.example.msa.common.apinfra.exception.BusinessException;
 
+@XRayEnabled
 @Service
 public class SampleServiceImpl implements SampleService {
 

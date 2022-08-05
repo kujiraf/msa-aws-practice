@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.example.msa.backend.usersvc.domain.model.UserResourceMapper;
 import com.example.msa.backend.usersvc.domain.service.SampleService;
 import com.example.msa.common.apinfra.exception.BusinessException;
 import com.example.msa.common.model.UserResource;
 
+@XRayEnabled
 @RestController
 @RequestMapping("api/v1")
 public class BackendUserController {

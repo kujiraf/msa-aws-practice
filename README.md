@@ -271,7 +271,17 @@ Controller の処理実行と、View のレンダリング処理の間に処理�
     ```java
     @Pointcut(@within(com.amazonaws.xray.spring.aop.XRayEnabled) && execution(* com.example.msa..*.*(..))
     ```
-- `@Aspect`
+- `@Aspect`：これを付けたクラスを Aspect として認識する。
+  - Aspect を Bean 定義する必要があるため、`@Component`も付与する
+  - Advice(`@Before`, `@After`など)を`@Aspect`を付けたクラスのメソッドにつけることで、そのメソッドを Advice として実行させることができる
+- AOP の簡単な説明は[こちら](https://qiita.com/daisuzz/items/de937816a5d7c9210469)
+
+### MDC(Mapped Diagnostic Context)
+
+- [MDC とは](https://terasolunaorg.github.io/guideline/current/ja/ArchitectureInDetail/GeneralFuncDetail/Logging.html#mdc)
+  - 1 リクエスト中に出力されるログに、同じ情報（ユーザ名やリクエストの ID）を埋め込むことで、ログのトレーサビリティを向上させるもの
+  - MDC はスレッドローカルな Map を内部に持ち、キーに対して put する。remove されるまでログに put した値を出力することができる
+    - Filter などでリクエストの先頭で put し、処理終了後に remove すればいい
 
 # Tips
 

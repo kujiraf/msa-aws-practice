@@ -23,16 +23,18 @@ import com.amazonaws.xray.spring.aop.AbstractXRayInterceptor;
 import com.amazonaws.xray.strategy.sampling.LocalizedSamplingStrategy;
 import com.example.msa.common.apinfra.cloud.aws.CloudFormationStackResolver;
 
-@Aspect
+@Aspect // SpringAOPの機能を利用して、このクラスをアスペクト機能を持つコンポーネントとして定義する。これを付けて@PointCutを有効化する。
 @Configuration
-@EnableAspectJAutoProxy
+@EnableAspectJAutoProxy // SpringAOPの機能を利用するクラスとして宣言する
 public class XRayConfig extends AbstractXRayInterceptor {
 
-  private static final String DYNAMODB_ENDPOINT_EXPORT = "";
-  private static final String DYNAMODB_REGION_EXPORT = "";
+  private static final String DYNAMODB_ENDPOINT_EXPORT = ""; // TODO DynamoDBのエンドポイントを追加する
+  private static final String DYNAMODB_REGION_EXPORT = ""; // TODO DynamoDBのエンドポイントを追加する
 
+  /** CloudFormationのスタック情報を取得するためのユーティリティクラス */
   @Autowired CloudFormationStackResolver cloudFormationStackResolver;
 
+  // X-rayの設定をstatic要素内で定義しているが、内部でTraceIDをMDCを使って保護しているため、マルチスレッドでも問題なく動作する
   static {
     try {
       AWSXRayRecorderBuilder builder =
@@ -46,17 +48,24 @@ public class XRayConfig extends AbstractXRayInterceptor {
     }
   }
 
-  @Override
-  @Pointcut(
-      "@within(com.amazonaws.xray.spring.aop.XRayEnabled)"
-          + " && execution(* com.example.msa..*.*(..))")
-  protected void xrayEnabledClasses() {}
-
+  /**
+   * リクエストにTraceIDを設定するためのサーブレットフィルタの設定を行う.<br>
+   * インスタンス生成時に、マネコン上に指定した文字列がサービス名として定義される
+   *
+   * @return
+   */
   @Bean
   public AWSXRayServletFilter awsxRayServletFilter() {
     return new AWSXRayServletFilter("MsaFrontendApp");
   }
 
+  /**
+   * awsXrayServletFilterで設定したサーブレットを登録する<br>
+   * SpringSecurityと併用した際も、先頭にTraceIDを付与するようにフィルタ適用条件に高い優先度を持たせる。<br>
+   * この設定により、SpringSecurityが請け負う処理もトレーシングされる。
+   *
+   * @return
+   */
   @Bean
   public FilterRegistrationBean<AWSXRayServletFilter> filterRegistrationBean() {
     FilterRegistrationBean<AWSXRayServletFilter> bean =
@@ -65,6 +74,12 @@ public class XRayConfig extends AbstractXRayInterceptor {
     return bean;
   }
 
+  /**
+   * トレースログを保存するためのDynamoDB設定を定義する。<br>
+   * DynamoDBへのアクセスのトレーシングを有効にする場合、リクエストハンドラにTracingHandlerを設定し、static要素で定義したAWSXRayRecorderを設定する
+   *
+   * @return
+   */
   @Bean
   AmazonDynamoDB amazonDynamoDB() {
     return AmazonDynamoDBAsyncClientBuilder.standard()
@@ -76,6 +91,17 @@ public class XRayConfig extends AbstractXRayInterceptor {
         .build();
   }
 
+  /**
+   * サブセグメントを開始終了するコンポーネントの定義条件を設定する<br>
+   * ここでは、@XRayEnabledアノテーションを付与した、com.example.msa配下のパッケージにあるすべてのクラスメソッド実行時を定義している
+   */
+  @Override
+  @Pointcut(
+      "@within(com.amazonaws.xray.spring.aop.XRayEnabled)"
+          + " && execution(* com.example.msa..*.*(..))")
+  protected void xrayEnabledClasses() {}
+
+  /** N,O */
   @EventListener(ApplicationReadyEvent.class)
   public void onStartup() {
     AWSXRay.endSegment();

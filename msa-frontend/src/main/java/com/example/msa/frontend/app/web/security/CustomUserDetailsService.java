@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.example.msa.common.apinfra.exception.BusinessException;
 import com.example.msa.common.model.UserResource;
 import com.example.msa.frontend.domain.service.OrchestrationService;
@@ -19,6 +20,7 @@ import com.example.msa.frontend.domain.service.OrchestrationService;
  * <br>
  * UserDetailsを取得するクラスは、org.springframework.security.core.userdetails.UserDetailsServiceを実装する必要がある。
  */
+@XRayEnabled
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 

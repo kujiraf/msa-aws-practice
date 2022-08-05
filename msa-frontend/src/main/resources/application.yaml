@@ -4,5 +4,3 @@ spring:
 server:
   servlet:
     context-path: /frontend
-service:
-  dns: http://localhost:8081

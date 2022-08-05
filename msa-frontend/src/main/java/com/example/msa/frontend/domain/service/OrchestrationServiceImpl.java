@@ -2,6 +2,7 @@ package com.example.msa.frontend.domain.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.example.msa.common.apinfra.exception.BusinessException;
 import com.example.msa.common.model.UserResource;
 import com.example.msa.frontend.domain.repository.UserResourceRepository;
@@ -11,6 +12,7 @@ import com.example.msa.frontend.domain.repository.UserResourceRepository;
  * バックエンドのマイクロサービスの呼び出しが複数になる場合などに実行フローを制御する役割を持つ。<br>
  * 必要な対象分のマイクロサービスの呼び出しや、リトライ制御、エラーが発生してロールバックしたい際の補償トランザクション処理などもこのクラスで実施する。
  */
+@XRayEnabled
 @Service
 public class OrchestrationServiceImpl implements OrchestrationService {
 

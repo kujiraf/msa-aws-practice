@@ -9,6 +9,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.example.msa.common.apinfra.exception.BusinessException;
 import com.example.msa.common.apinfra.exception.BusinessExceptionResponse;
 import com.example.msa.common.apinfra.exception.ErrorResponse;
@@ -21,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * サービス呼び出し時の例外処理を一元的にこのクラスの責務とすることで、OrchestrationServiceの記述をシンプルにできる。
  */
 // @Profile("v1") TODO
+@XRayEnabled
 @Component
 public class UserResourceRepositoryImpl implements UserResourceRepository {
 

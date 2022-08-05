@@ -5,9 +5,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.example.msa.frontend.app.model.PortalInformation;
 import com.example.msa.frontend.app.web.security.CustomUserDetails;
 
+@XRayEnabled
 @Controller
 public class FrontendController {
 
